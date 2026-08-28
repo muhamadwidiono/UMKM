@@ -4,9 +4,24 @@ import uuid
 import pytest
 import requests
 
+import re
+from pathlib import Path
+
 BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "https://bisnis-hub-12.preview.emergentagent.com").rstrip("/")
 OWNER_EMAIL = "muhamad.widiono98@gmail.com"
-OWNER_PASSWORD = "Password123!"
+
+OWNER_PASSWORD = os.environ.get("OWNER_PASSWORD")
+if not OWNER_PASSWORD:
+    try:
+        cred_text = Path("/app/memory/test_credentials.md").read_text()
+        match = re.search(r"Password:\s*`([^`]+)`", cred_text)
+        if match:
+            OWNER_PASSWORD = match.group(1)
+    except Exception:
+        pass
+if not OWNER_PASSWORD:
+    OWNER_PASSWORD = "Password123!"  # Safe default test fallback if file is not found
+
 
 
 @pytest.fixture(scope="session")

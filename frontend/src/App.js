@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { Toaster, toast } from "sonner";
@@ -551,7 +551,7 @@ function DashboardTab({ currentUser, tenant }) {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchStats = () => {
+  const fetchStats = useCallback(() => {
     axios.get(`${API}/dashboard/stats`)
       .then((res) => {
         setStats(res.data);
@@ -560,11 +560,11 @@ function DashboardTab({ currentUser, tenant }) {
       .catch((err) => {
         toast.error("Gagal memuat statistik dashboard.");
       });
-  };
+  }, []);
 
   useEffect(() => {
     fetchStats();
-  }, []);
+  }, [fetchStats]);
 
   if (loading) {
     return <div className="text-slate-400 text-sm">Memuat data dasbor laporan...</div>;
@@ -670,7 +670,7 @@ function DashboardTab({ currentUser, tenant }) {
               <p className="text-xs text-slate-500">Belum ada transaksi terekam.</p>
             ) : (
               stats.top_products.map((p, idx) => (
-                <div key={idx} className="flex justify-between items-center p-3 bg-[#1A1F2E]/60 border border-white/5 rounded-xl">
+                <div key={p.name} className="flex justify-between items-center p-3 bg-[#1A1F2E]/60 border border-white/5 rounded-xl">
                   <div>
                     <span className="text-xs font-bold text-slate-200 block">{p.name}</span>
                     <span className="text-[10px] text-slate-500">{idx + 1}. Produk Favorit</span>
@@ -706,18 +706,18 @@ function POSTab({ currentUser, tenant }) {
   const [showReceiptModal, setShowReceiptModal] = useState(false);
   const [createdTx, setCreatedTx] = useState(null);
 
-  const fetchPOSData = () => {
+  const fetchPOSData = useCallback(() => {
     axios.get(`${API}/products`)
       .then((res) => setProducts(res.data))
       .catch(() => toast.error("Gagal memuat produk."));
     axios.get(`${API}/customers`)
       .then((res) => setCustomers(res.data))
       .catch(() => {});
-  };
+  }, []);
 
   useEffect(() => {
     fetchPOSData();
-  }, []);
+  }, [fetchPOSData]);
 
   const addToCart = (product) => {
     const existing = cart.find(item => item.product_id === product.product_id);
@@ -1047,8 +1047,8 @@ function POSTab({ currentUser, tenant }) {
               </div>
 
               <div className="space-y-2 border-b border-dashed border-white/10 pb-3">
-                {createdTx.items.map((item, idx) => (
-                  <div key={idx} className="flex justify-between text-[11px]">
+                {createdTx.items.map((item) => (
+                  <div key={item.product_id} className="flex justify-between text-[11px]">
                     <span>{item.name} (x{item.quantity})</span>
                     <span>Rp {(item.price * item.quantity).toLocaleString("id-ID")}</span>
                   </div>
@@ -1130,18 +1130,18 @@ function TransactionsTab({ currentUser, tenant }) {
   const [selectedTx, setSelectedTx] = useState(null);
   const [showPayModal, setShowPayModal] = useState(false);
 
-  const fetchTransactions = () => {
+  const fetchTransactions = useCallback(() => {
     axios.get(`${API}/transactions`)
       .then((res) => {
         setTransactions(res.data);
         setLoading(false);
       })
       .catch(() => toast.error("Gagal memuat transaksi."));
-  };
+  }, []);
 
   useEffect(() => {
     fetchTransactions();
-  }, []);
+  }, [fetchTransactions]);
 
   const handleRepayment = (e) => {
     e.preventDefault();
@@ -1313,7 +1313,7 @@ function ProductsTab({ currentUser, tenant }) {
   const [editId, setEditId] = useState("");
   const [showForm, setShowForm] = useState(false);
 
-  const fetchProducts = () => {
+  const fetchProducts = useCallback(() => {
     axios.get(`${API}/products`)
       .then((res) => setProducts(res.data))
       .catch(() => toast.error("Gagal memuat produk."));
@@ -1323,11 +1323,11 @@ function ProductsTab({ currentUser, tenant }) {
         setLoading(false);
       })
       .catch(() => {});
-  };
+  }, []);
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [fetchProducts]);
 
   const handleProductSubmit = (e) => {
     e.preventDefault();
@@ -1620,18 +1620,18 @@ function CustomersTab({ currentUser, tenant }) {
   const [editId, setEditId] = useState("");
   const [showForm, setShowForm] = useState(false);
 
-  const fetchCustomers = () => {
+  const fetchCustomers = useCallback(() => {
     axios.get(`${API}/customers`)
       .then((res) => {
         setCustomers(res.data);
         setLoading(false);
       })
       .catch(() => toast.error("Gagal memuat pelanggan."));
-  };
+  }, []);
 
   useEffect(() => {
     fetchCustomers();
-  }, []);
+  }, [fetchCustomers]);
 
   const handleCustomerSubmit = (e) => {
     e.preventDefault();
@@ -1924,18 +1924,18 @@ function BillingTab({ currentUser, tenant }) {
   const [showSnapSimulation, setShowSnapSimulation] = useState(false);
   const [snapData, setSnapData] = useState(null);
 
-  const fetchSubscription = () => {
+  const fetchSubscription = useCallback(() => {
     axios.get(`${API}/dashboard/subscription`)
       .then((res) => {
         setCurrentSub(res.data);
         setLoading(false);
       })
       .catch(() => {});
-  };
+  }, []);
 
   useEffect(() => {
     fetchSubscription();
-  }, []);
+  }, [fetchSubscription]);
 
   const handleUpgradeTrigger = (pkg) => {
     toast.loading("Menghubungi Midtrans Payment...", { id: "billing-upgrade" });
@@ -2004,8 +2004,8 @@ function BillingTab({ currentUser, tenant }) {
 
       {/* Pricing Comparison cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {packages.map((pkg, idx) => (
-          <div key={idx} className={`bg-[#131722] border rounded-2xl p-6 shadow-xl relative flex flex-col justify-between space-y-6 ${
+        {packages.map((pkg) => (
+          <div key={pkg.name} className={`bg-[#131722] border rounded-2xl p-6 shadow-xl relative flex flex-col justify-between space-y-6 ${
             pkg.current ? "border-amber-500" : "border-white/5"
           }`}>
             {pkg.current && (
@@ -2026,8 +2026,8 @@ function BillingTab({ currentUser, tenant }) {
               </div>
 
               <ul className="space-y-2 pt-2 text-xs text-slate-300">
-                {pkg.features.map((f, fIdx) => (
-                  <li key={fIdx} className="flex items-center space-x-2">
+                {pkg.features.map((f) => (
+                  <li key={f} className="flex items-center space-x-2">
                     <CheckCircle2 className="text-amber-500 shrink-0" size={14} />
                     <span>{f}</span>
                   </li>
