@@ -1,0 +1,30 @@
+{
+  "summary": "Final verification of the 3 target issues on Sistem Operasional UMKM. Results: (1) 'Sesi telah habis' toast on unauth visits to '/' and '/login' — FIXED (no longer appears). However a NEW/regression toast 'Gagal memuat statistik dashboard.' appears on unauth root '/' visit before the redirect to /login completes (DashboardTab useEffect fires a 401'd /dashboard/stats call during the loading→redirect window). (2) 'Pilih Paket Basic' hidden for Pro tenant — FIXED (data-testid=upgrade-pkg-btn-Basic not rendered; Pro card shows AKTIF badge). (3) Midtrans simulation upgrade (Basic→Pro via GOPAY/QRIS) — FIXED end-to-end: sidebar switches to 'PAKET PRO', WhatsApp tab becomes enabled, page reload persists the state, /api/auth/me returns tenant.package='Pro'.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "MainAppLayout → DashboardTab race on unauth '/'", "issue": "When visiting '/' without a session, MainAppLayout correctly reads no cookie and calls navigate('/login'), but React first renders the child Routes with loading=false momentarily, letting DashboardTab mount and fire GET /api/dashboard/stats which 401s and triggers toast.error('Gagal memuat statistik dashboard.'). User sees a red error toast on the login screen. Fix: in the useEffect, do the navigate BEFORE (or without) setLoading(false), or gate rendering of children behind `currentUser` (not just !loading). Alternatively add an axios response interceptor that silently redirects on 401 without toasting.", "selector": "App.js DashboardTab fetchStats catch → toast.error", "priority": "MEDIUM"}
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/backend/tests/backend_test.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [
+    "Suppress the 'Gagal memuat statistik dashboard.' toast on unauth root visits. Recommended: guard MainAppLayout to only render <Routes/> when currentUser is set (else return spinner), so DashboardTab never mounts before /auth/me completes or redirect happens.",
+    "(Optional/carry-over) Split /app/backend/server.py (1035+ lines) into feature modules."
+  ],
+  "critical_code_review_comments": [
+    "The Pro-upgrade rank check (getPkgRank at App.js:2039-2044) is correct and works — Pro tenant no longer sees Basic; Basic tenant sees only Pro. Consider hoisting the rank map to module scope and reusing it for future tier logic.",
+    "The auth guard added at App.js:390-398 correctly eliminates the 'Sesi telah habis' toast on cold visits. Good fix.",
+    "Midtrans simulation → window.location.reload() flow works because backend get_current_user still accepts the JWT via cookie. Ideal long-term: refresh via state (fetchAuthMe + fetchSubscription) instead of full reload.",
+    "New race condition surfaced: unauthenticated child components (DashboardTab) mount briefly and their 401 handlers show error toasts. Add a global axios interceptor that redirects to /login on 401 and swallows the toast when the user has no session."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "not re-run (no backend changes to test)", "frontend": "3/3 target issues resolved; 1 new/regression toast surfaced on unauth root"},
+  "test_credentials": "Owner Pro: muhamad.widiono98@gmail.com / Password123! (tenant-default, toggled between Basic and Pro in mongo for testing). Bypass demo buttons on /login also work.",
+  "seed_data_creation": "Toggled tenants.tenant-default.package Pro→Basic→Pro during test. Ended state: Pro (as seeded).",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "All 3 target fixes are confirmed working. The only remaining issue is a new toast 'Gagal memuat statistik dashboard.' on unauth root visits caused by DashboardTab briefly mounting before the /login redirect. To reproduce: open incognito → visit '/' → observe red error toast on login screen. Root cause in App.js MainAppLayout useEffect (~L383-413): setLoading(false) is called before navigate, so the Routes tree renders once with children mounting. Fix by rendering children only when currentUser exists, or by adding a global 401 interceptor that navigates silently.",
+  "rca of the issue": "MainAppLayout useEffect calls setLoading(false); navigate('/login'). React renders the intermediate state where loading=false but currentUser is null; the matched route inside MainAppLayout (default 'dashboard' tab) mounts DashboardTab whose useEffect fires GET /dashboard/stats → 401 → toast.error('Gagal memuat statistik dashboard.') before the navigate completes."
+}

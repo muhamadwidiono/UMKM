@@ -1,0 +1,52 @@
+{
+  "summary": "E2E tested Sistem Operasional UMKM app. Backend: 11/11 tests passed (auth, dashboard, products, customers, transactions, WA logs, audit logs, billing upgrade). Frontend: happy path works (login, dashboard, products, customers, POS checkout with receipt modal, transactions list). Billing upgrade flow starts correctly but logs the user out after simulated payment due to a session/cookie handling bug. Also identified _id/password_hash leakage in API responses and a stray 'Sesi telah habis' toast on the login page.",
+  "backend_issues": {
+    "critical": [
+      {"endpoint": "/api/auth/login & /api/auth/me & /api/products & /api/customers", "issue": "Responses leak MongoDB `_id` (ObjectId) via Pydantic alias in BaseDocument. login response also leaks `password_hash`. Should exclude these from responses.", "priority": "HIGH"}
+    ],
+    "minor": [
+      {"endpoint": "server.py", "issue": "Single file is 1049 lines (>700 limit) — should be split into modules (auth, products, customers, transactions, billing, dashboard)."},
+      {"endpoint": "/api/dashboard/upgrade", "issue": "Simulation-only fallback: when MIDTRANS_SERVER_KEY missing, returns synthetic snap_token/URL — OK, but log message clarifies fallback."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "BillingPage - Pricing cards", "issue": "'Pilih Paket Basic' button shown even when tenant is already on Pro (functions as a downgrade path but is labelled as upgrade). Should hide upgrade buttons for lower tiers when on Pro.", "selector": "[data-testid='upgrade-pkg-btn-Basic']", "priority": "MEDIUM"},
+      {"component": "App auth guard", "issue": "On login page, App.useEffect calls /api/auth/me even when no token/cookie is present, causing a 401 and a 'Sesi telah habis. Harap masuk kembali.' toast on every visit for unauthenticated users. Skip /auth/me when there is no session_token cookie or Authorization header.", "selector": "App.js line ~390", "priority": "MEDIUM"}
+    ],
+    "integration_issues": [
+      {"flow": "Billing upgrade → Midtrans simulation", "issue": "After clicking 'GOPAY / QRIS Otomatis' (handleCompletePaymentSimulation), the code calls window.location.reload(). Because JWT-login stores the token in the `session_token` cookie but the backend only validates cookies against the `user_sessions` collection (populated by Google OAuth), and axios.defaults Authorization header is lost across reload, the reload triggers a 401 on /auth/me and the user is redirected to /login. The upgrade actually succeeds on the backend but the user cannot see the updated package without re-login. Fix: after simulation, refresh subscription state via API (already done) and REMOVE the window.location.reload(); OR change backend to accept a JWT cookie as Bearer fallback.", "affected_selectors": ["[data-testid='simulate-pay-qris-btn']", "[data-testid='current-package-title']"]}
+    ],
+    "design_issues": [
+      {"screen": "Login page", "issues": ["Stray red 'Sesi telah habis' toast appears on first load for unauthenticated visitors — bad first impression."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Fix session persistence: either stop calling window.location.reload() after Midtrans simulation (Billing.jsx handleCompletePaymentSimulation) OR make backend accept JWT via `session_token` cookie as fallback (decode JWT if user_sessions lookup fails).",
+    "Skip /auth/me on login page mount when no token/cookie is present to avoid the 'Sesi telah habis' toast on first-time visitors.",
+    "Exclude `_id` and `password_hash` from all Pydantic response models (use model_dump(exclude={'id','password_hash'}) or dedicated response models).",
+    "Hide the 'Pilih Paket Basic' button when tenant is on Pro (only allow upgrades, not silent downgrades).",
+    "Split /app/backend/server.py (1049 lines) into feature modules."
+  ],
+  "critical_code_review_comments": [
+    "BaseDocument model exposes MongoDB _id via alias and populate_by_name — this leaks internal ObjectId to clients across every resource endpoint.",
+    "Login response returns the full User Pydantic model including password_hash — password_hash must never be returned to the client.",
+    "Frontend axios session handling relies on in-memory defaults header; after reload the app depends solely on cookie which backend can only verify for OAuth sessions → causes silent logout after any window.location.reload().",
+    "server.py > 700 lines DRY/maintainability violation.",
+    "handleCompletePaymentSimulation calls fetchSubscription() then window.location.reload() 1s later — the reload defeats the state refresh and forces a fresh auth check."
+  ],
+  "updated_files": [
+    "/app/backend/tests/backend_test.py"
+  ],
+  "success_rate": {"backend": "100%", "frontend": "~85% (billing flow completes upgrade on backend but breaks UX by kicking user to login)"},
+  "test_credentials": "Owner: muhamad.widiono98@gmail.com / Password123! (Pro, tenant-default). Staff: staff@widiono.com / Password123!. Gratis Owner: owner-gratis@test.com / Password123!.",
+  "seed_data_creation": "Test runs created TEST_-prefixed products/customers and a few INV-... transactions. Not cleaned up beyond tests where explicit DELETE was made (customer & product create tests do cleanup; POS-created transaction persists).",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Backend regression suite lives at /app/backend/tests/backend_test.py (11 tests, all passing). Main open bugs are: (1) session lost after Midtrans reload; (2) _id/password_hash leaked in responses; (3) 'Sesi telah habis' toast on login page for unauthenticated users; (4) Basic 'upgrade' button visible for Pro tenants. After main agent fixes, re-run: pytest + retest billing flow end-to-end verifying user remains logged in and package label updates without reload.",
+  "rca of the issue": "Root cause of billing-logout: After payment simulation the frontend calls window.location.reload(). On reload axios.defaults.headers.common['Authorization'] is not re-initialised (it is only set inside handleLoginSubmit at runtime). The backend's get_current_user first checks the session_token cookie against db.user_sessions (populated only by /auth/google OAuth callback). JWT logins set session_token cookie to the raw JWT but never insert a matching user_sessions doc, so the cookie lookup returns None. Without Authorization header, the request 401s and the App useEffect navigates the user to /login. Mitigation: (a) drop the window.location.reload() and rely on fetchSubscription(); OR (b) in get_current_user, if cookie lookup fails, additionally try decoding the cookie value as a JWT via get_current_user_from_token before returning 401."
+}

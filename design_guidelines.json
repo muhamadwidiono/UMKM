@@ -1,0 +1,132 @@
+{
+  "theme": "Dark Mode Modern",
+  "typography": {
+    "headings": {
+      "family": "Cabinet Grotesk",
+      "style": "Professional, modern, geometric but distinctive"
+    },
+    "body": {
+      "family": "IBM Plex Sans",
+      "style": "Technical, precise, highly readable in dense layouts"
+    },
+    "hierarchy": {
+      "h1": "text-4xl sm:text-5xl lg:text-6xl tracking-tighter font-black text-slate-50",
+      "h2": "text-2xl sm:text-3xl lg:text-4xl tracking-tight font-bold text-slate-100",
+      "h3": "text-xl sm:text-2xl font-semibold text-slate-200",
+      "h4": "text-lg sm:text-xl font-medium text-slate-300",
+      "body": "text-base leading-relaxed text-slate-400",
+      "labels": "text-xs tracking-[0.2em] uppercase font-semibold text-slate-500"
+    }
+  },
+  "colors": {
+    "background": {
+      "base": "#0B0F19",
+      "description": "Deep Slate (Tinted dark gray, avoiding pure black)"
+    },
+    "surface": {
+      "default": "#131722",
+      "raised": "#1A1F2E"
+    },
+    "brand_highlights": {
+      "primary": "#F59E0B",
+      "primary_name": "Gold/Amber",
+      "secondary": "#3B82F6",
+      "secondary_name": "Slate Blue",
+      "accent": "#06B6D4",
+      "accent_name": "Neon Cyan"
+    },
+    "text": {
+      "primary": "#F8FAFC",
+      "secondary": "#94A3B8",
+      "muted": "#64748B"
+    },
+    "borders": {
+      "default": "rgba(255, 255, 255, 0.08)",
+      "focus": "#F59E0B"
+    }
+  },
+  "visual_enhancers": {
+    "glassmorphism": {
+      "usage": "Sticky Headers, Floating Navs, Modal Overlays, and Tooltips",
+      "classes": "bg-slate-900/60 backdrop-blur-xl backdrop-saturate-150 border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)]",
+      "rule": "NEVER use a fully transparent background. Glassmorphism must feel like milled crystal—smooth and distinct."
+    },
+    "surfaces": {
+      "dashboard_cards": {
+        "style": "Grid Borders or Flat Solid",
+        "classes": "bg-[#131722] border border-white/5 shadow-sm rounded-xl overflow-hidden",
+        "hover": "hover:-translate-y-1 hover:shadow-[0_8px_24px_rgba(0,0,0,0.4)] hover:border-white/15 transition-transform duration-300"
+      }
+    }
+  },
+  "grids_and_layouts": {
+    "strategy": "High Density Grid (For Dashboards) - The Bento Grid Protocol",
+    "base_grid": "grid-cols-1 md:grid-cols-3 lg:grid-cols-4",
+    "spacing": "gap-6 p-6 md:p-8",
+    "widget_ratios": {
+      "summary_metric": "col-span-1",
+      "primary_data_chart": "col-span-2 row-span-2 lg:col-span-3",
+      "activity_feed": "col-span-1 row-span-2"
+    }
+  },
+  "motion_and_interaction": {
+    "hover_states": "MUST explicitly set text color on hover (e.g., hover:bg-slate-800 hover:text-white). Button lifts slightly (-translate-y-1).",
+    "focus_states": "MUST have HIGHER contrast. focus:ring-2 focus:ring-amber-500 focus:outline-none focus:ring-offset-2 focus:ring-offset-[#0B0F19]",
+    "transitions": "transition-colors transition-transform duration-200 ease-out (DO NOT use 'transition-all')"
+  },
+  "components": {
+    "general": "Use Shadcn components for logic, but customize styling heavily to fit the MSME luxury/modern dark theme.",
+    "buttons": "Sharp or slightly rounded (rounded-md). Solid Gold/Amber for primary CTAs. Glass/outline for secondary.",
+    "inputs": "Flat solid background (bg-[#0B0F19]) inside cards, with 1px border. Focus state glows with Slate Blue or Amber.",
+    "navigation": "Always visible on desktop. Use Glassmorphism for fixed top nav. Sidebar uses flat solid dark."
+  },
+  "accessibility": {
+    "contrast": "Minimum 4.5:1 ratio. Ensure text over gradients or images has drop shadows.",
+    "testing": "All interactive and key informational elements MUST include a 'data-testid' attribute (e.g., data-testid='submit-button').",
+    "focus": "Keyboard navigation must show distinct focus rings."
+  },
+  "media": {
+    "image_urls": [
+      {
+        "category": "Hero / Global Background Abstract",
+        "url": "https://images.unsplash.com/photo-1557264337-e8a93017fe92?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzJ8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMGRhdGElMjB2aXN1YWxpemF0aW9uJTIwZGFya3xlbnwwfHx8fDE3ODc4ODY0OTZ8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Concentric rings of blue and purple liquid paint for abstract data/tech visualization."
+      },
+      {
+        "category": "Workspace Context / Onboarding Background",
+        "url": "https://images.unsplash.com/photo-1735948055457-8d816fb80a87?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxOTB8MHwxfHNlYXJjaHwzfHxtb2Rlcm4lMjBvZmZpY2UlMjB3b3Jrc3BhY2UlMjBkYXJrfGVufDB8fHx8MTc4Nzg4NjQ5Mnww&ixlib=rb-4.1.0&q=85",
+        "description": "A dark modern desk with a computer, setting an MSME professional tone."
+      },
+      {
+        "category": "Data Node Visualization",
+        "url": "https://images.unsplash.com/photo-1677784976154-816c3ceca511?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzJ8MHwxfHNlYXJjaHwzfHxhYnN0cmFjdCUyMGRhdGElMjB2aXN1YWxpemF0aW9uJTIwZGFya3xlbnwwfHx8fDE3ODc4ODY0OTZ8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Blue and purple background with small dots representing data streams."
+      }
+    ]
+  },
+  "3d_libraries_and_charts": {
+    "charts": "Use Shadcn Charts (Recharts under the hood). Customize tooltips with the glassmorphism classes.",
+    "icons": "Use @phosphor-icons/react for dense dashboard tooling. Clean and professional."
+  },
+  "instructions_to_main_agent": [
+    "NOTE: You have .js files, NOT .tsx files. Share the guideline for .js files. For example, use sonner.js instead of sonner.tsx.",
+    "Install required fonts (@fontsource/cabinet-grotesk, @fontsource/ibm-plex-sans) or load via Google Fonts/CDN.",
+    "Install @phosphor-icons/react.",
+    "Setup Tailwind config with the specified dark theme palette (base #0B0F19, surface #131722, amber/blue highlights).",
+    "Build the dashboard using the Bento Grid Protocol for modular widgets.",
+    "Ensure all interactive elements have data-testid."
+  ],
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
+    "You tend to converge toward generic, 'on distribution' outputs. Make creative, distinctive frontends that surprise and delight.",
+    "Do not make generic centered layouts. Use layered design elements with z-index hierarchy.",
+    "Use glassmorphism effects with backdrop filters (12-24px blur) specifically for floating elements.",
+    "You MUST NOT apply universal transition (e.g., transition: all). This breaks transforms. Always add transitions for specific interactive elements.",
+    "You MUST NOT center align the app container (.App { text-align: center; }). This disrupts human reading flow.",
+    "Always use modern button styles with hover/active interactions.",
+    "NEVER use AI assistant Emoji characters (like robot, brain, lightbulb) for icons.",
+    "Every interaction needs micro-animations - hover states, transitions, entrance animations. Static = dead.",
+    "Use 2-3x more spacing than feels comfortable. Cramped designs look cheap.",
+    "Use sonner for toasts, located in /app/src/components/ui/sonner.js.",
+    "NEVER use placeholder text or dummy image URLs. Only use the provided media URLs."
+  ]
+}
