@@ -281,7 +281,7 @@ async def seed_default_accounts():
             name="Toko Kelontong Gratis",
             type="toko",
             package="Gratis",
-            max_transactions_limit=10,
+            max_transactions_limit=50,
             transaction_count=0,
             owner_email=gratis_email
         )
@@ -616,10 +616,10 @@ async def create_transaction(tx_data: TransactionCreate, current_user: User = De
         raise HTTPException(status_code=404, detail="Tenant details not found")
     tenant = Tenant(**tenant_doc)
     
-    if tenant.package == "Gratis" and tenant.transaction_count >= 10:
+    if tenant.package == "Gratis" and tenant.transaction_count >= 50:
         raise HTTPException(
             status_code=403, 
-            detail="Batas transaksi paket Gratis (10 transaksi/bulan) telah tercapai. Harap upgrade ke paket Pro!"
+            detail="Batas transaksi paket Gratis (50 transaksi/bulan) telah tercapai. Harap upgrade ke paket Pro!"
         )
     elif tenant.package == "Basic" and tenant.transaction_count >= 100:
         raise HTTPException(
@@ -877,7 +877,7 @@ class UpgradeRequest(BaseModel):
 async def upgrade_subscription(req: UpgradeRequest, current_user: User = Depends(get_current_user)):
     tenant_id = current_user.tenant_id
     
-    price_map = {"Basic": 50000.0, "Pro": 150000.0}
+    price_map = {"Basic": 49000.0, "Pro": 99000.0}
     amount = price_map.get(req.package, 0.0)
 
     billing_id = f"bill-{uuid.uuid4().hex[:12]}"

@@ -100,6 +100,281 @@ function AuthCallback() {
   );
 }
 
+// --- LANDING PAGE ---
+function LandingPage() {
+  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const hasCookie = document.cookie.includes("session_token=");
+    if (hasCookie) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  const FAQItems = [
+    { q: "Apakah data bisnis saya aman dari tenant lain?", a: "Sangat aman. Sistem kami menggunakan isolasi database multi-tenant yang ketat menggunakan tenant_id pada setiap query database. Tenant lain tidak akan pernah bisa mengintip atau mengakses data bisnis Anda." },
+    { q: "Bagaimana cara pengiriman WhatsApp otomatis bekerja?", a: "Pada paket Pro, sistem kami mendeteksi nomor telepon pelanggan Anda dan secara otomatis mengirimkan rincian invoice, bukti bayar, atau pengingat jatuh tempo melalui WhatsApp API resmi ketika transaksi dicatat." },
+    { q: "Apakah saya bisa berganti paket kapan saja?", a: "Tentu saja! Anda bisa melakukan upgrade dari paket Gratis ke Basic atau Pro kapan saja melalui halaman Billing, dengan pembayaran mudah menggunakan gateway lokal." }
+  ];
+
+  return (
+    <div className="min-h-screen bg-[#0B0F19] text-white flex flex-col font-sans">
+      {/* Header / Navbar */}
+      <header className="glass sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
+        <div className="flex items-center space-x-3">
+          <div className="p-2 bg-amber-500/20 text-amber-500 rounded-lg">
+            <Store size={24} />
+          </div>
+          <span className="text-xl font-black tracking-tight">BisnisHub <span className="text-amber-500">SaaS</span></span>
+        </div>
+        <div className="flex items-center space-x-4">
+          <a href="#features" className="text-sm text-slate-400 hover:text-white transition-colors hidden md:block">Fitur</a>
+          <a href="#pricing" className="text-sm text-slate-400 hover:text-white transition-colors hidden md:block">Harga</a>
+          <a href="#faq" className="text-sm text-slate-400 hover:text-white transition-colors hidden md:block">FAQ</a>
+          {isLoggedIn ? (
+            <button
+              onClick={() => navigate("/dashboard")}
+              className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-[#0B0F19] text-xs font-bold rounded-xl transition-transform active:translate-y-0.5"
+            >
+              Ke Dashboard
+            </button>
+          ) : (
+            <>
+              <button
+                onClick={() => navigate("/login")}
+                className="text-xs text-white font-bold hover:underline"
+              >
+                Masuk
+              </button>
+              <button
+                onClick={() => navigate("/login")}
+                className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-[#0B0F19] text-xs font-bold rounded-xl transition-transform active:translate-y-0.5"
+              >
+                Coba Gratis
+              </button>
+            </>
+          )}
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="relative px-6 py-20 md:py-32 flex flex-col items-center text-center max-w-4xl mx-auto space-y-6 overflow-hidden">
+        <div className="absolute top-0 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl -translate-y-1/2"></div>
+        <div className="absolute bottom-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl translate-y-1/2"></div>
+
+        <span className="text-[10px] bg-amber-500/10 text-amber-500 font-black tracking-widest px-3 py-1 rounded-full uppercase border border-amber-500/20">
+          Solusi Operasional UMKM Terbaik #1 di Indonesia
+        </span>
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tighter leading-none">
+          Kelola Bisnis UMKM <br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-amber-300">Lebih Mudah & Modern</span>
+        </h1>
+        <p className="text-slate-400 text-sm sm:text-base md:text-lg max-w-2xl leading-relaxed">
+          Kelola pelanggan, transaksi kasir, invoice, pembayaran cicilan, pencatatan hutang, stok gudang otomatis, hingga laporan keuangan dan notifikasi WhatsApp otomatis dalam satu aplikasi multi-tenant yang aman.
+        </p>
+        <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 pt-4 justify-center">
+          <button
+            onClick={() => navigate("/login")}
+            className="px-8 py-3.5 bg-amber-500 hover:bg-amber-600 text-[#0B0F19] font-black rounded-xl text-sm transition-transform active:translate-y-0.5 shadow-lg shadow-amber-500/20"
+          >
+            Mulai Gratis Sekarang
+          </button>
+          <a
+            href="#pricing"
+            className="px-8 py-3.5 bg-[#1A1F2E] hover:bg-slate-800 text-white font-bold rounded-xl text-sm border border-white/5 transition-colors text-center"
+          >
+            Lihat Paket Harga
+          </a>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section id="features" className="px-6 py-20 bg-[#131722]/50 border-t border-b border-white/5">
+        <div className="max-w-6xl mx-auto space-y-12">
+          <div className="text-center space-y-3">
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">Semua Kebutuhan Bisnis Anda, Terpenuhi</h2>
+            <p className="text-slate-400 text-xs max-w-lg mx-auto">Dirancang khusus untuk laundry, bengkel, toko retail, salon, catering, dan jasa profesional lainnya.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-[#131722] border border-white/5 p-6 rounded-2xl space-y-3">
+              <div className="p-3 bg-amber-500/10 text-amber-500 rounded-xl w-fit">
+                <Store size={24} />
+              </div>
+              <h3 className="font-bold text-white text-base">Mesin POS Kasir Cepat</h3>
+              <p className="text-xs text-slate-400 leading-relaxed">Mencatat pesanan pelanggan dalam beberapa ketukan, mendukung diskon, pajak, cetak struk, dan berbagai metode bayar.</p>
+            </div>
+
+            <div className="bg-[#131722] border border-white/5 p-6 rounded-2xl space-y-3">
+              <div className="p-3 bg-blue-500/10 text-blue-500 rounded-xl w-fit">
+                <MessageSquare size={24} />
+              </div>
+              <h3 className="font-bold text-white text-base">Notifikasi WhatsApp (Pro)</h3>
+              <p className="text-xs text-slate-400 leading-relaxed">Kirim struk digital, kuitansi bayar, serta pengingat jatuh tempo kasbon pelanggan secara otomatis via WhatsApp.</p>
+            </div>
+
+            <div className="bg-[#131722] border border-white/5 p-6 rounded-2xl space-y-3">
+              <div className="p-3 bg-emerald-500/10 text-emerald-500 rounded-xl w-fit">
+                <Package size={24} />
+              </div>
+              <h3 className="font-bold text-white text-base">Kontrol Persediaan Stok (Pro)</h3>
+              <p className="text-xs text-slate-400 leading-relaxed">Pengurangan stok otomatis ketika transaksi dicatat, peringatan ketika stok menipis, serta mutasi stok komprehensif.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section id="pricing" className="px-6 py-20 max-w-6xl mx-auto space-y-12">
+        <div className="text-center space-y-3">
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">Pilihan Paket Langganan Sederhana</h2>
+          <p className="text-slate-400 text-xs max-w-lg mx-auto">Tanpa kontrak tersembunyi, pilih paket yang paling cocok untuk operasional bisnis Anda saat ini.</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* GRATIS */}
+          <div className="bg-[#131722] border border-white/5 rounded-2xl p-6 flex flex-col justify-between space-y-6 hover:border-white/10 transition-colors">
+            <div className="space-y-4">
+              <div>
+                <h3 className="font-black text-white text-lg tracking-tight">GRATIS</h3>
+                <p className="text-xs text-slate-500 mt-1 leading-relaxed">Sempurna untuk uji coba operasional awal UMKM</p>
+              </div>
+              <div>
+                <span className="text-2xl font-black text-white">Rp 0</span>
+                <span className="text-[10px] text-slate-400 block mt-1">Maksimal 50 transaksi / bulan</span>
+              </div>
+              <ul className="space-y-2 pt-2 text-xs text-slate-300">
+                <li className="flex items-center space-x-2">
+                  <CheckCircle2 className="text-amber-500 shrink-0" size={14} />
+                  <span>Batas 50 Transaksi</span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <CheckCircle2 className="text-amber-500 shrink-0" size={14} />
+                  <span>POS dasar</span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <CheckCircle2 className="text-amber-500 shrink-0" size={14} />
+                  <span>Metode bayar Cash</span>
+                </li>
+              </ul>
+            </div>
+            <button
+              onClick={() => navigate("/login")}
+              className="w-full py-2.5 bg-[#1A1F2E] hover:bg-amber-500 hover:text-[#0B0F19] text-white font-bold rounded-xl text-xs transition-colors"
+            >
+              Mulai Gratis
+            </button>
+          </div>
+
+          {/* BASIC */}
+          <div className="bg-[#131722] border border-white/5 rounded-2xl p-6 flex flex-col justify-between space-y-6 hover:border-white/10 transition-colors">
+            <div className="space-y-4">
+              <div>
+                <h3 className="font-black text-white text-lg tracking-tight">BASIC</h3>
+                <p className="text-xs text-slate-500 mt-1 leading-relaxed">Ideal untuk toko operasional bertumbuh</p>
+              </div>
+              <div>
+                <span className="text-2xl font-black text-white">Rp 49.000</span>
+                <span className="text-[10px] text-slate-400 block mt-1">Tanpa batasan transaksi harian</span>
+              </div>
+              <ul className="space-y-2 pt-2 text-xs text-slate-300">
+                <li className="flex items-center space-x-2">
+                  <CheckCircle2 className="text-amber-500 shrink-0" size={14} />
+                  <span>Transaksi Unlimited</span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <CheckCircle2 className="text-amber-500 shrink-0" size={14} />
+                  <span>Manajemen Stok dasar</span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <CheckCircle2 className="text-amber-500 shrink-0" size={14} />
+                  <span>Metode QRIS & Kasbon</span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <CheckCircle2 className="text-amber-500 shrink-0" size={14} />
+                  <span>Histori Pelanggan lengkap</span>
+                </li>
+              </ul>
+            </div>
+            <button
+              onClick={() => navigate("/login")}
+              className="w-full py-2.5 bg-[#1A1F2E] hover:bg-amber-500 hover:text-[#0B0F19] text-white font-bold rounded-xl text-xs transition-colors"
+            >
+              Pilih Basic
+            </button>
+          </div>
+
+          {/* PRO */}
+          <div className="bg-[#131722] border border-amber-500 rounded-2xl p-6 flex flex-col justify-between space-y-6 relative hover:shadow-[0_8px_32px_rgba(245,158,11,0.15)] transition-all">
+            <span className="absolute top-0 right-6 -translate-y-1/2 text-[9px] bg-amber-500 text-[#0B0F19] font-black tracking-widest px-2.5 py-1 rounded-full uppercase shadow">
+              PALING POPULER
+            </span>
+            <div className="space-y-4">
+              <div>
+                <h3 className="font-black text-white text-lg tracking-tight">PRO</h3>
+                <p className="text-xs text-slate-500 mt-1 leading-relaxed">Fitur lengkap untuk bisnis profesional berskala besar</p>
+              </div>
+              <div>
+                <span className="text-2xl font-black text-white">Rp 99.000</span>
+                <span className="text-[10px] text-slate-400 block mt-1">Tanpa batasan transaksi harian</span>
+              </div>
+              <ul className="space-y-2 pt-2 text-xs text-slate-300">
+                <li className="flex items-center space-x-2">
+                  <CheckCircle2 className="text-amber-500 shrink-0" size={14} />
+                  <span>Semua Fitur Basic</span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <CheckCircle2 className="text-amber-500 shrink-0" size={14} />
+                  <span>Deduction Stok otomatis</span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <CheckCircle2 className="text-amber-500 shrink-0" size={14} />
+                  <span>Notifikasi WhatsApp otomatis</span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <CheckCircle2 className="text-amber-500 shrink-0" size={14} />
+                  <span>Laporan Keuangan Ekspor</span>
+                </li>
+              </ul>
+            </div>
+            <button
+              onClick={() => navigate("/login")}
+              className="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-[#0B0F19] font-black rounded-xl text-xs transition-colors"
+            >
+              Pilih Pro
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section id="faq" className="px-6 py-20 bg-[#131722]/30 border-t border-white/5">
+        <div className="max-w-4xl mx-auto space-y-12">
+          <div className="text-center space-y-3">
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">Pertanyaan Sering Diajukan (FAQ)</h2>
+            <p className="text-slate-400 text-xs max-w-lg mx-auto">Jawaban singkat untuk meluruskan rasa penasaran Anda.</p>
+          </div>
+
+          <div className="space-y-4">
+            {FAQItems.map((item, idx) => (
+              <div key={idx} className="p-5 bg-[#131722] border border-white/5 rounded-2xl space-y-2">
+                <h4 className="font-bold text-white text-sm">Q: {item.q}</h4>
+                <p className="text-xs text-slate-400 leading-relaxed">A: {item.a}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="px-6 py-12 border-t border-white/5 bg-[#0B0F19] text-center text-xs text-slate-500 space-y-3 mt-auto">
+        <p>© 2026 BisnisHub SaaS. Seluruh Hak Cipta Dilindungi.</p>
+        <p className="text-[10px]">Diproteksi dengan enkripsi multi-tenant modern & Standard Keamanan Industri.</p>
+      </footer>
+    </div>
+  );
+}
+
 // --- APPROUTER WRAPPER TO PREVENT AUTH RACE CONDITIONS ---
 function AppRouter() {
   const location = useLocation();
@@ -111,6 +386,7 @@ function AppRouter() {
 
   return (
     <Routes>
+      <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/*" element={<MainAppLayout />} />
     </Routes>
@@ -379,6 +655,16 @@ function MainAppLayout() {
   const [loading, setLoading] = useState(true);
   const [currentTab, setCurrentTab] = useState("dashboard");
 
+  // Onboarding Wizard States
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [onboardingStep, setOnboardingStep] = useState(1);
+  const [onboardBizName, setOnboardBizName] = useState("");
+  const [onboardBizType, setOnboardBizType] = useState("laundry");
+  const [onboardCustName, setOnboardCustName] = useState("");
+  const [onboardCustPhone, setOnboardCustPhone] = useState("");
+  const [onboardProdName, setOnboardProdName] = useState("");
+  const [onboardProdPrice, setOnboardProdPrice] = useState(0);
+
   // Check auth
   useEffect(() => {
     // If returning from OAuth callback, skip the /me check
@@ -402,6 +688,13 @@ function MainAppLayout() {
         setCurrentUser(res.data.user);
         setTenant(res.data.tenant);
         setLoading(false);
+
+        // Show onboarding if tenant has 0 transaction history and hasn't dismissed it
+        if (res.data.tenant && res.data.tenant.transaction_count === 0 && !localStorage.getItem(`onboard_done_${res.data.tenant.tenant_id}`)) {
+          setOnboardBizName(res.data.tenant.name || "");
+          setOnboardBizType(res.data.tenant.type || "laundry");
+          setShowOnboarding(true);
+        }
       })
       .catch((err) => {
         if (hasCookie) {
@@ -540,6 +833,246 @@ function MainAppLayout() {
           {currentTab === "superadmin" && <SuperAdminTab currentUser={currentUser} tenant={tenant} />}
         </div>
       </main>
+
+      {/* ONBOARDING WIZARD OVERLAY MODAL */}
+      {showOnboarding && (
+        <div className="fixed inset-0 bg-[#0B0F19]/90 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-fade-in">
+          <div className="bg-[#131722] border border-amber-500/30 rounded-2xl w-full max-w-lg p-8 space-y-6 shadow-2xl relative">
+            
+            {/* Onboarding Header */}
+            <div className="space-y-2 text-center border-b border-white/5 pb-4">
+              <div className="flex justify-between items-center text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+                <span className="text-amber-500">Panduan Onboarding UMKM</span>
+                <span>Langkah {onboardingStep} dari 5</span>
+              </div>
+              
+              {/* Step Progress Bar */}
+              <div className="w-full bg-[#1A1F2E] h-1.5 rounded-full overflow-hidden mt-2">
+                <div 
+                  className="bg-amber-500 h-full transition-all duration-300"
+                  style={{ width: `${(onboardingStep / 5) * 100}%` }}
+                ></div>
+              </div>
+            </div>
+
+            {/* Step 1: Informasi Bisnis */}
+            {onboardingStep === 1 && (
+              <div className="space-y-4">
+                <div className="space-y-1 text-center">
+                  <h3 className="text-base font-bold text-white">Langkah 1: Profil & Informasi Bisnis</h3>
+                  <p className="text-xs text-slate-400">Pastikan rincian dasar usaha Anda sudah benar.</p>
+                </div>
+                <div className="space-y-3 text-xs text-slate-300">
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">Nama Bisnis / UMKM</label>
+                    <input 
+                      type="text" value={onboardBizName} onChange={(e) => setOnboardBizName(e.target.value)}
+                      className="w-full px-3 py-2 bg-[#0B0F19] border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">Jenis Operasional</label>
+                    <select 
+                      value={onboardBizType} onChange={(e) => setOnboardBizType(e.target.value)}
+                      className="w-full px-3 py-2 bg-[#0B0F19] border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    >
+                      <option value="laundry">Laundry</option>
+                      <option value="bengkel">Bengkel</option>
+                      <option value="toko">Toko Kelontong</option>
+                      <option value="jasa">Jasa Servis / Lainnya</option>
+                    </select>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setOnboardingStep(2)}
+                  className="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-[#0B0F19] font-bold rounded-xl text-xs active:translate-y-0.5 transition-transform"
+                >
+                  Lanjut ke Pelanggan
+                </button>
+              </div>
+            )}
+
+            {/* Step 2: Tambahkan Pelanggan Pertama */}
+            {onboardingStep === 2 && (
+              <div className="space-y-4">
+                <div className="space-y-1 text-center">
+                  <h3 className="text-base font-bold text-white">Langkah 2: Tambahkan Pelanggan Pertama</h3>
+                  <p className="text-xs text-slate-400">Siapa pelanggan pertama yang ingin Anda layani?</p>
+                </div>
+                <div className="space-y-3 text-xs text-slate-300">
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">Nama Pelanggan</label>
+                    <input 
+                      type="text" placeholder="Contoh: Budi Santoso" value={onboardCustName} onChange={(e) => setOnboardCustName(e.target.value)}
+                      className="w-full px-3 py-2 bg-[#0B0F19] border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">Nomor WhatsApp</label>
+                    <input 
+                      type="text" placeholder="Contoh: 081234567890" value={onboardCustPhone} onChange={(e) => setOnboardCustPhone(e.target.value)}
+                      className="w-full px-3 py-2 bg-[#0B0F19] border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                  </div>
+                </div>
+                <div className="flex space-x-3">
+                  <button
+                    onClick={() => setOnboardingStep(1)}
+                    className="flex-1 py-2 bg-[#1A1F2E] hover:bg-slate-800 text-white font-bold rounded-xl text-xs border border-white/5"
+                  >
+                    Kembali
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (onboardCustName.trim() && onboardCustPhone.trim()) {
+                        axios.post(`${API}/customers`, {
+                          customer_id: "", tenant_id: "", name: onboardCustName, phone: onboardCustPhone, address: ""
+                        }).catch(() => {});
+                      }
+                      setOnboardingStep(3);
+                    }}
+                    className="flex-1 py-2 bg-amber-500 hover:bg-amber-600 text-[#0B0F19] font-bold rounded-xl text-xs active:translate-y-0.5 transition-transform"
+                  >
+                    Simpan & Lanjut
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Step 3: Tambahkan Produk Pertama */}
+            {onboardingStep === 3 && (
+              <div className="space-y-4">
+                <div className="space-y-1 text-center">
+                  <h3 className="text-base font-bold text-white">Langkah 3: Tambahkan Produk / Jasa Pertama</h3>
+                  <p className="text-xs text-slate-400">Daftarkan item atau jasa kasir utama usaha Anda.</p>
+                </div>
+                <div className="space-y-3 text-xs text-slate-300">
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">Nama Produk / Jasa</label>
+                    <input 
+                      type="text" placeholder="Contoh: Cuci Kiloan Standard" value={onboardProdName} onChange={(e) => setOnboardProdName(e.target.value)}
+                      className="w-full px-3 py-2 bg-[#0B0F19] border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">Harga Jual (Rp)</label>
+                    <input 
+                      type="number" value={onboardProdPrice} onChange={(e) => setOnboardProdPrice(parseFloat(e.target.value) || 0)}
+                      className="w-full px-3 py-2 bg-[#0B0F19] border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                  </div>
+                </div>
+                <div className="flex space-x-3">
+                  <button
+                    onClick={() => setOnboardingStep(2)}
+                    className="flex-1 py-2 bg-[#1A1F2E] hover:bg-slate-800 text-white font-bold rounded-xl text-xs border border-white/5"
+                  >
+                    Kembali
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (onboardProdName.trim() && onboardProdPrice > 0) {
+                        axios.post(`${API}/products`, {
+                          product_id: "", tenant_id: "", name: onboardProdName, price: onboardProdPrice, stock: 100, min_stock: 5, unit: "pcs"
+                        }).catch(() => {});
+                      }
+                      setOnboardingStep(4);
+                    }}
+                    className="flex-1 py-2 bg-amber-500 hover:bg-amber-600 text-[#0B0F19] font-bold rounded-xl text-xs active:translate-y-0.5 transition-transform"
+                  >
+                    Simpan & Lanjut
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Step 4: Pilih Paket Berlangganan */}
+            {onboardingStep === 4 && (
+              <div className="space-y-4">
+                <div className="space-y-1 text-center">
+                  <h3 className="text-base font-bold text-white">Langkah 4: Pilih Paket Langganan UMKM</h3>
+                  <p className="text-xs text-slate-400">Pilih paket terbaik untuk memaksimalkan omset operasional.</p>
+                </div>
+                
+                {/* Simplified pricing grid for modal */}
+                <div className="grid grid-cols-3 gap-3 text-[11px] text-slate-300">
+                  <div className="p-3 bg-[#0B0F19] border border-white/5 rounded-xl text-center space-y-1">
+                    <span className="font-bold text-white block">GRATIS</span>
+                    <span className="text-[10px] text-amber-500 block">Rp 0</span>
+                    <p className="text-[9px] text-slate-500 mt-1">Limit 50 trx/bln</p>
+                  </div>
+                  <div className="p-3 bg-[#0B0F19] border border-white/5 rounded-xl text-center space-y-1">
+                    <span className="font-bold text-white block">BASIC</span>
+                    <span className="text-[10px] text-amber-500 block">Rp 49K</span>
+                    <p className="text-[9px] text-slate-500 mt-1">Stok & Piutang</p>
+                  </div>
+                  <div className="p-3 bg-[#0B0F19] border border-amber-500/50 rounded-xl text-center space-y-1 relative">
+                    <span className="absolute top-0 right-1 -translate-y-1/2 text-[7px] bg-amber-500 text-[#0B0F19] font-bold px-1 rounded">PRO</span>
+                    <span className="font-bold text-white block">PRO</span>
+                    <span className="text-[10px] text-amber-500 block">Rp 99K</span>
+                    <p className="text-[9px] text-slate-500 mt-1">WA & Stok Otomatis</p>
+                  </div>
+                </div>
+
+                <div className="flex space-x-3">
+                  <button
+                    onClick={() => setOnboardingStep(3)}
+                    className="flex-1 py-2 bg-[#1A1F2E] hover:bg-slate-800 text-white font-bold rounded-xl text-xs border border-white/5"
+                  >
+                    Kembali
+                  </button>
+                  <button
+                    onClick={() => setOnboardingStep(5)}
+                    className="flex-1 py-2 bg-amber-500 hover:bg-amber-600 text-[#0B0F19] font-bold rounded-xl text-xs active:translate-y-0.5 transition-transform"
+                  >
+                    Pilih Paket Default
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Step 5: Selesai */}
+            {onboardingStep === 5 && (
+              <div className="space-y-4 text-center">
+                <div className="inline-flex p-3 bg-amber-500/10 text-amber-500 rounded-full">
+                  <CheckCircle2 size={32} />
+                </div>
+                <div className="space-y-1">
+                  <h3 className="text-base font-bold text-white">Setup Selesai!</h3>
+                  <p className="text-xs text-slate-400">Bisnis Anda "{onboardBizName}" siap melesat tinggi.</p>
+                </div>
+                
+                <div className="p-4 bg-[#0B0F19] border border-white/5 rounded-xl text-left text-xs space-y-2 text-slate-300">
+                  <div className="flex items-center space-x-2 text-emerald-500">
+                    <CheckCircle2 size={14} />
+                    <span>Profil UMKM terdaftar</span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-emerald-500">
+                    <CheckCircle2 size={14} />
+                    <span>Pelanggan pertama terdaftar</span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-emerald-500">
+                    <CheckCircle2 size={14} />
+                    <span>Katalog produk/jasa awal terbuat</span>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => {
+                    localStorage.setItem(`onboard_done_${tenant?.tenant_id}`, "true");
+                    setShowOnboarding(false);
+                    toast.success("Selamat mencoba platform!");
+                    window.location.reload();
+                  }}
+                  className="w-full py-3 bg-amber-500 hover:bg-amber-600 text-[#0B0F19] font-black rounded-xl text-xs active:translate-y-0.5 transition-transform"
+                >
+                  Mulai Gunakan Dashboard Aplikasi
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -1975,9 +2508,9 @@ function BillingTab({ currentUser, tenant }) {
   }
 
   const packages = [
-    { name: "Gratis", price: "Rp 0", desc: "Sempurna untuk uji coba operasional awal UMKM", limit: "Maksimal 10 transaksi / bulan", features: ["Batas 10 Transaksi", "POS dasar", "Metode bayar Cash"], current: currentSub?.package === "Gratis" },
-    { name: "Basic", price: "Rp 50.000", desc: "Ideal untuk toko operasional bertumbuh", limit: "Maksimal 100 transaksi / bulan", features: ["Batas 100 Transaksi", "Manajemen Stok dasar", "Metode QRIS & Kasbon", "Histori Pelanggan lengkap"], current: currentSub?.package === "Basic", upgradeTo: "Basic" },
-    { name: "Pro", price: "Rp 150.000", desc: "Fitur lengkap untuk bisnis profesional berskala besar", limit: "Tanpa batasan transaksi harian", features: ["Transaksi Unlimited", "Deduction Stok otomatis", "Notifikasi WhatsApp otomatis", "Laporan Keuangan Ekspor", "Dasbor Laporan Interaktif"], current: currentSub?.package === "Pro", upgradeTo: "Pro" }
+    { name: "Gratis", price: "Rp 0", desc: "Sempurna untuk uji coba operasional awal UMKM", limit: "Maksimal 50 transaksi / bulan", features: ["Batas 50 Transaksi", "POS dasar", "Metode bayar Cash"], current: currentSub?.package === "Gratis" },
+    { name: "Basic", price: "Rp 49.000", desc: "Ideal untuk toko operasional bertumbuh", limit: "Tanpa batasan transaksi harian", features: ["Transaksi Unlimited", "Manajemen Stok dasar", "Metode QRIS & Kasbon", "Histori Pelanggan lengkap"], current: currentSub?.package === "Basic", upgradeTo: "Basic" },
+    { name: "Pro", price: "Rp 99.000", desc: "Fitur lengkap untuk bisnis profesional berskala besar", limit: "Tanpa batasan transaksi harian", features: ["Transaksi Unlimited", "Deduction Stok otomatis", "Notifikasi WhatsApp otomatis", "Laporan Keuangan Ekspor", "Dasbor Laporan Interaktif"], current: currentSub?.package === "Pro", upgradeTo: "Pro" }
   ];
 
   return (
